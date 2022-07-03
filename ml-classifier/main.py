@@ -1,15 +1,14 @@
+# Import streamlit api
 import streamlit as st
+import pandas as pd
 
-# Import Datasets from SKLEARN
-from sklearn import datasets
+# Import helper functions
+import helper_functions
 
 # Import Visualization Modules
 import matplotlib.pyplot as plt
 
 # Import relevant libraries for Machine Learning Models and Auxiliary Libraries
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 import numpy as np
 
@@ -29,71 +28,22 @@ Which one is the best?
 """
 )
 
+st.sidebar.header("User Input Parameters")
+
 dataset_name = st.sidebar.selectbox("Select Dataset", ("Iris", "Breast Cancer", "Wine"))
 
-st.write(f"## {dataset_name} Dataset")
+st.sidebar.subheader("User Input Features")
+
+# User Input Parameters
+df = helper_functions.iris_input_features()
 
 classifier_name = st.sidebar.selectbox(
     "Select Classifier", ("KNN", "SVM", "Random Forest")
 )
 
-
-def get_dataset(dataset_name):
-    if dataset_name == "Iris":
-        data = datasets.load_iris()
-    elif dataset_name == "Breast Cancer":
-        data = datasets.load_breast_cancer()
-    else:
-        data = datasets.load_wine()
-
-    X = data.data
-    y = data.target
-
-    return X, y
-
-
-X, y = get_dataset(dataset_name)
-st.write("Shape of Dataset", X.shape)
-st.write("Number of Classes", len(np.unique(y)))
-
-
-def add_parameter_ui(clf_name):
-    params = dict()
-    if clf_name == "KNN":
-        K = st.sidebar.slider("K", 1, 15)
-        params["K"] = K
-    elif clf_name == "SVM":
-        C = st.sidebar.slider("C", 0.01, 10.0)
-        params["C"] = C
-    else:
-        max_depth = st.sidebar.slider("max_depth", 2, 15)
-        n_estimators = st.sidebar.slider("n_estimators", 1, 100)
-        params["max_depth"] = max_depth
-        params["n_estimators"] = n_estimators
-    return params
-
-
-params = add_parameter_ui(classifier_name)
-
-
-def get_classifier(clf_name, params):
-    if clf_name == "KNN":
-        clf = KNeighborsClassifier(n_neighbors=params["K"])
-
-    elif clf_name == "SVM":
-        clf = SVC(C=params["C"])
-
-    else:
-        clf = RandomForestClassifier(
-            n_estimators=params["n_estimators"],
-            max_depth=params["max_depth"],
-            random_state=1234,
-        )
-
-    return clf
-
-
-clf = get_classifier(classifier_name, params)
+data, X, y = helper_functions.get_dataset(dataset_name)
+params = helper_functions.add_parameter_ui(classifier_name)
+clf = helper_functions.get_classifier(classifier_name, params)
 
 # Classification
 X_train, X_test, y_train, y_test = train_test_split(
@@ -104,8 +54,21 @@ clf.fit(X_train, y_train)
 y_pred = clf.predict(X_test)
 
 acc = accuracy_score(y_test, y_pred)
-st.write(f"Classifier: {classifier_name}")
-st.write(f"Accuracy: {acc}")
+
+# Generate predictions
+prediction_proba = clf.predict_proba(df)
+df_prediction_proba = pd.DataFrame(
+    prediction_proba,
+    columns=[data.target_names[0], data.target_names[1], data.target_names[2]],
+    index=["Probability"],
+)
+
+# Main Body Visual
+st.write(f"## {dataset_name} Dataset")
+st.subheader("---------------------------")
+st.subheader("Exploratory Data Analysis")
+st.write("Shape of Dataset", X.shape)
+st.write("Number of Classes", len(np.unique(y)))
 
 # Plotting of Graphs
 pca = PCA(2)
@@ -122,3 +85,14 @@ plt.colorbar()
 
 # Show Graphs
 st.pyplot(fig)
+
+# Classification Results
+st.subheader("---------------------------")
+st.subheader("Classification Results")
+st.write(f"Classifier: {classifier_name}")
+st.write(f"Accuracy: {acc}")
+
+# Predictions Results
+st.subheader("---------------------------")
+st.subheader("Prediction Probabilities")
+st.write(df_prediction_proba)
