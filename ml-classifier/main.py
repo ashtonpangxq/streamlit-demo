@@ -18,16 +18,7 @@ from sklearn.decomposition import PCA
 # Import Evaluation Metrics from SKLEARN
 from sklearn.metrics import accuracy_score
 
-
-st.title("Comparing Machine Learning Classifier Models")
-
-st.write(
-    """
-# Explore different classifier
-Which one is the best?
-"""
-)
-
+# Side Bar Visual
 st.sidebar.header("User Input Parameters")
 
 dataset_name = st.sidebar.selectbox("Select Dataset", ("Iris", "Breast Cancer", "Wine"))
@@ -35,13 +26,17 @@ dataset_name = st.sidebar.selectbox("Select Dataset", ("Iris", "Breast Cancer", 
 st.sidebar.subheader("User Input Features")
 
 # User Input Parameters
-df = helper_functions.iris_input_features()
+if dataset_name == "Iris":
+    df = helper_functions.iris_input_features()
 
 classifier_name = st.sidebar.selectbox(
     "Select Classifier", ("KNN", "SVM", "Random Forest")
 )
 
+# Data Preparation
+
 data, X, y = helper_functions.get_dataset(dataset_name)
+st.sidebar.subheader("Hyperparameter Tuning")
 params = helper_functions.add_parameter_ui(classifier_name)
 clf = helper_functions.get_classifier(classifier_name, params)
 
@@ -52,18 +47,28 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 clf.fit(X_train, y_train)
 y_pred = clf.predict(X_test)
-
 acc = accuracy_score(y_test, y_pred)
 
 # Generate predictions
-prediction_proba = clf.predict_proba(df)
-df_prediction_proba = pd.DataFrame(
-    prediction_proba,
-    columns=[data.target_names[0], data.target_names[1], data.target_names[2]],
-    index=["Probability"],
-)
+if dataset_name == "Iris":
+    prediction = clf.predict(df)
+    prediction_proba = clf.predict_proba(df)
+    df_prediction_proba = pd.DataFrame(
+        prediction_proba,
+        columns=[data.target_names[0], data.target_names[1], data.target_names[2]],
+        index=["Probability"],
+    )
 
 # Main Body Visual
+st.title("Comparing Machine Learning Classifier Models")
+
+st.write(
+    """
+# Explore different classifier
+Which one is the best?
+"""
+)
+
 st.write(f"## {dataset_name} Dataset")
 st.subheader("---------------------------")
 st.subheader("Exploratory Data Analysis")
@@ -93,6 +98,8 @@ st.write(f"Classifier: {classifier_name}")
 st.write(f"Accuracy: {acc}")
 
 # Predictions Results
-st.subheader("---------------------------")
-st.subheader("Prediction Probabilities")
-st.write(df_prediction_proba)
+if dataset_name == "Iris":
+    st.subheader("---------------------------")
+    st.subheader("Prediction Probabilities")
+    st.write(df_prediction_proba)
+    st.write(f"Predicted: {''.join(data.target_names[prediction]).capitalize()}")
