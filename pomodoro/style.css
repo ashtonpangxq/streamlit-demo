@@ -1,0 +1,15 @@
+body {
+    color: white;
+    background-image: url('https://wallpaperaccess.com/download/kit-kat-2107652');
+    background-size: cover;
+    background-color: #D6EAF8;
+}
+
+div.stButton>button:first-child {
+    background-color: white;
+    color: red;
+    border-radius: 50%;
+    border-color: white;
+    height: 6em;
+    width: 6em;
+}

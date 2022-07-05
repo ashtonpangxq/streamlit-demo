@@ -1,0 +1,4 @@
+# to install a requirements.txt file:
+# pip install -r requirements.txt
+streamlit==0.71.0
+opencv-python==4.6.0.66
