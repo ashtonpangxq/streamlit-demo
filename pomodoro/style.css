@@ -2,7 +2,13 @@ body {
     color: white;
     background-image: url('https://wallpaperaccess.com/download/kit-kat-2107652');
     background-size: cover;
-    background-color: #D6EAF8;
+    background-color: red;
+}
+
+.sidebar .sidebar-content {
+    background-image: none;
+    background-color: #FF7276;
+    color: black;
 }
 
 div.stButton>button:first-child {

@@ -44,10 +44,15 @@ with col1:
 # Create Timer Button
 # button_clicked = st.button("Start")
 
+# Streamlit Sidebar
+st.sidebar.header("Timer Settings")
+t1 = st.sidebar.selectbox("Work Time", list(range(5, 51, 5)))
+t2 = st.sidebar.selectbox("Break Time", list(range(5, 16, 5)))
+
 # Working Time
-t1 = 1500
+t1 = t1 * 60
 # Resting Time
-t2 = 300
+t2 = t2 * 60
 
 if button_clicked:
     with st.empty():
