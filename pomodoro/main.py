@@ -14,7 +14,7 @@ def main():
     st.markdown("#")
 
     # Create Timer Button & Centralize Button
-    col1, col2, col3, col4, col5 = st.beta_columns(5)
+    col1, col2, col3, col4, col5 = st.columns(5)
 
     with col2:
         pass
