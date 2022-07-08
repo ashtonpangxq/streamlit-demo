@@ -1,18 +1,20 @@
-# Creating an Interactive Web App with Streamlit and Scikit-Learn
-This mini-project aims to explore the different datasets and machine learning classifiers using Streamlit for deployment. Streamlit lets you create a Web Based application for machine learning projects with simple Python scripts. See official [Streamlit Website](https://www.streamlit.io/) for more information regarding Streamlit.
+# Creating an Interactive Web App with Streamlit
+This streamlit-project aims to explore different applications of AI/Machine Learning using Streamlit for deployment. Streamlit lets you create a Web Based application for machine learning projects with simple Python scripts. See official [Streamlit Website](https://www.streamlit.io/) for more information regarding Streamlit.
 
 ## Preview
 To be completed.
 
-## Installation
+## Installation Instructions using Conda
+Go to directory of interest.
+
 You need these dependencies:
 ```console
-pip install streamlit
-pip install scikit-learn
-pip install matplotlib
+conda create -n <project-name> python=3.8
+conda activate <project-name>
+pip install -r requirements.txt
 ```
 
-## Usage
+## Running Streamlit
 Run
 ```console
 streamlit run main.py
